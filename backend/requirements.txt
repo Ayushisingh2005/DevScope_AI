@@ -1,0 +1,7 @@
+# Python dependencies
+fastapi
+uvicorn
+openai
+python-multipart
+sqlalchemy
+python-dotenv
