@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
-// Component Imports
+import { Terminal, Shield, Zap, Cpu, Activity, Clock, MessageSquare, ChevronRight, ArrowLeft } from 'lucide-react';
 import Starfield from './components/Starfield';
 import Sidebar from './components/Sidebar';
 import ChatBubble from './components/ChatBubble';
@@ -11,197 +10,128 @@ import InputArea from './components/InputArea';
 import IssueGraph from './components/IssueGraph';
 
 const App = () => {
-  // --- STATE MANAGEMENT ---
-  const [messages, setMessages] = useState([
-    { 
-      role: 'ai', 
-      output: 'Welcome to DevScope AI. I am ready to analyze your code functions, complexity, and security vulnerabilities. Upload a file or type a query to begin.',
-    }
-  ]);
+  const [messages, setMessages] = useState([{ role: 'ai', output: "Neural Node Active. DevScope AI standing by." }]);
   const [input, setInput] = useState("");
   const [graphData, setGraphData] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [activeTab, setActiveTab] = useState('chat');
-  const [selectedFile, setSelectedFile] = useState(null); // NEW: Holds the file before sending
-
+  const [activeTab, setActiveTab] = useState('chat'); 
+  const [historyItems, setHistoryItems] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const scrollRef = useRef(null);
-  const graphRef = useRef(null);
 
-  // --- SIDEBAR ACTION HANDLER ---
   const handleSidebarAction = (id) => {
-    setActiveTab(id);
-
     if (id === 'dashboard') {
-      setMessages([{ role: 'ai', output: 'Dashboard reset. How can I help you with your code today?' }]);
+      setMessages([{ role: 'ai', output: "Portal Reset. Memory is fresh." }]);
+      setActiveTab('chat'); setShowAnalytics(false);
     }
-
-    if (id === 'analytics') {
-      const element = document.getElementById('analytics-section');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }
-
-    if (id === 'upload') {
-      // Triggers the hidden file input
-      document.getElementById('sidebar-file-trigger').click();
-    }
-
     if (id === 'history') {
-      fetchHistory();
-      alert("Analysis history refreshed from database.");
+      axios.get('http://localhost:8000/chat-history').then(res => {
+        setHistoryItems(res.data?.filter(m => m.role === 'user') || []);
+        setActiveTab('history');
+      });
     }
+    if (id === 'upload') document.getElementById('sidebar-file-trigger')?.click();
   };
 
-  // --- DATA FETCHING ---
-  const fetchHistory = async () => {
-    try {
-      const res = await axios.get('http://localhost:8000/history');
-      // FIXED: Removed the incorrect axios.post call that was here
-      setGraphData(res.data);
-    } catch (err) {
-      console.error("Failed to fetch history:", err);
-    }
-  };
+  const handleSend = async (forcedQuery = null) => {
+    const finalInput = forcedQuery || input;
+    if (!finalInput.trim() && !selectedFile) return;
 
-  // --- FILE HANDLING (Attach only, don't upload yet) ---
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      // Optional: Visual feedback that file is attached
-      setMessages(prev => [...prev, { role: 'ai', output: `📎 Attached: ${file.name}. You can now type your query and hit Send.` }]);
-    }
-  };
-
-  // --- SEND LOGIC (Combines Text + File) ---
-  const handleSend = async () => {
-    if (!input.trim() && !selectedFile) return;
+    // Scrub context: Take only descriptions, remove giant code blobs from memory
+    const ctx = messages.map(m => ({
+        role: m.role === 'ai' ? 'assistant' : 'user',
+        content: m.role === 'ai' ? m.output.substring(0, 200) : m.content.substring(0, 200)
+    })).slice(-2);
 
     setActiveTab('chat');
-    
-    // UI: Create the user message
-    const userText = input.trim() || (selectedFile ? `Analyzing file: ${selectedFile.name}` : "");
-    const userMessage = { role: 'user', content: userText };
-    setMessages(prev => [...prev, userMessage]);
-    
-    // Capture current states to send
-    const currentInput = input;
-    const currentFile = selectedFile;
-
-    // Reset inputs immediately for better UX
-    setInput("");
-    setSelectedFile(null);
-    setIsTyping(true);
+    setMessages(p => [...p, { role: 'user', content: selectedFile ? `File Audit: ${selectedFile.name}` : finalInput }]);
+    setInput(""); setIsTyping(true);
 
     const formData = new FormData();
-    formData.append('query', currentInput || "Analyze this code.");
-    if (currentFile) {
-      formData.append('file', currentFile);
-    }
+    formData.append('query', finalInput || "Analysis requested");
+    formData.append('context_json', JSON.stringify(ctx));
+    if (selectedFile) formData.append('file', selectedFile);
 
     try {
       const res = await axios.post('http://localhost:8000/analyze', formData);
-      setMessages(prev => [...prev, { 
+      const aiResponse = { 
         role: 'ai', 
-        output: res.data.output,
-        code: res.data.code,
-        metrics: {
-          complexity: res.data.complexity,
-          security: res.data.security,
-          maintainability: res.data.maintainability
-        }
-      }]);
-      
-      // Wait a moment for DB to save then refresh graph
-      setTimeout(() => fetchHistory(), 500);
-      
+        output: res.data?.output || "Report finalized.", 
+        code: res.data?.code,
+        metrics: { complexity: res.data?.complexity || 'N/A', security: res.data?.security || 'N/A', maintainability: res.data?.maintainability || 'N/A' }
+      };
+      setMessages(p => [...p, aiResponse]);
+      if (res.data?.code) { setShowAnalytics(true); axios.get('http://localhost:8000/history').then(r => setGraphData(r.data)); }
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'ai', output: 'Error: Could not connect to the AI engine.' }]);
-    } finally {
-      setIsTyping(false);
-    }
+      setMessages(p => [...p, { role: 'ai', output: "### ❌ Neural Sync Failed\nReset using the dashboard." }]);
+    } finally { setIsTyping(false); setSelectedFile(null); }
   };
 
-  // Auto-scroll logic
-  useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
-
-  useEffect(() => {
-    fetchHistory();
-  }, []);
-
-  useEffect(() => {
-    console.log("graphData has changed:", graphData);
-  }, [graphData]);
+  useEffect(() => { scrollRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isTyping]);
 
   return (
-    <div className="relative min-h-screen flex bg-[#050505] text-white font-sans overflow-hidden">
-      <Starfield />
-
-      <Sidebar onAction={handleSidebarAction} activeTab={activeTab} />
-
-      <main className="flex-1 flex flex-col z-10 relative overflow-hidden">
-        
-        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-12 pb-40">
-          <div className="max-w-4xl mx-auto w-full space-y-8">
-            
-            {messages.map((msg, idx) => (
-              <div key={idx} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <ChatBubble role={msg.role} content={msg.role === 'user' ? msg.content : msg.output} />
-                
-                {msg.role === 'ai' && msg.code && (
-                  <div className="ml-0 md:ml-4 mt-4 space-y-4">
-                    <CodeWindow code={msg.code} />
-                    <MetricsBar metrics={msg.metrics} />
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {isTyping && (
-              <div className="flex items-center gap-2 text-blue-400 text-sm italic animate-pulse">
-                <div className="flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></span>
-                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                </div>
-                <span>DevScope AI is analyzing...</span>
-              </div>
-            )}
-
-            {/* ANALYTICS SECTION */}
-            <div id="analytics-section" className="w-full relative py-10">
-                <IssueGraph data={graphData} />
-            </div>
-            
-            <div ref={scrollRef} />
-          </div>
+    <div className="relative min-h-screen flex bg-[#010103] text-white font-sans overflow-hidden">
+      <Starfield /><Sidebar onAction={handleSidebarAction} activeTab={activeTab} />
+      <main className="flex-1 pl-20 flex flex-col z-10 relative h-screen">
+        <div className="w-full py-3 px-8 bg-black/40 border-b border-white/5 flex justify-between items-center z-30">
+          <div className="flex items-center gap-2"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /><span className="text-[10px] font-black uppercase tracking-widest text-emerald-500">Node: Active</span></div>
+          <div className="text-[10px] text-gray-500 font-mono tracking-widest uppercase">Llama-3.3-70B • 480MS</div>
         </div>
 
-        {/* Hidden Input specifically for Sidebar 'Upload' button trigger */}
-        <input 
-          id="sidebar-file-trigger" 
-          type="file" 
-          className="hidden" 
-          onChange={handleFileChange} 
-        />
-
-        {/* UPDATED INPUT AREA CALL */}
-        <InputArea 
-          input={input} 
-          setInput={setInput} 
-          onSend={handleSend} 
-          onFileChange={handleFileChange} 
-          selectedFile={selectedFile}
-          setSelectedFile={setSelectedFile}
-        />
+        <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+          <div className="max-w-5xl mx-auto w-full px-6 md:px-12 pt-10 pb-40">
+            {activeTab === 'history' ? (
+              <div className="animate-in fade-in slide-in-from-bottom-4">
+                <h2 className="text-4xl font-black mb-12 flex items-center gap-4 text-white"><Clock className="text-blue-500" /> Archive</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {historyItems.map((item, idx) => (
+                    <button key={idx} onClick={() => { setMessages([{role:'user', content:item.content}, {role:'ai', output: "Context Restored."}]); setActiveTab('chat'); }}
+                      className="group bg-[#0a0c14] border border-white/5 rounded-2xl p-6 flex items-center gap-4 transition-all text-left"><MessageSquare size={16} className="text-blue-500 opacity-40" />
+                      <h3 className="text-lg font-bold text-gray-200">{item?.content?.substring(0, 70)}...</h3>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col">
+                {messages.length === 1 && !isTyping && (
+                  <div className="flex flex-col items-center justify-center min-h-[70vh] animate-in fade-in zoom-in">
+                    <h1 className="text-8xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-blue-400 to-blue-700 mb-8 drop-shadow-[0_0_30px_rgba(59,130,246,0.4)]">DevScopeAI</h1>
+                    <div className="grid grid-cols-24 gap-2 p-5 bg-white/[0.01] border border-white/5 rounded-3xl mb-12 shadow-2xl backdrop-blur-sm">
+                      {[...Array(96)].map((_, i) => ( <div key={i} className="w-2 h-2 rounded-full" style={{ backgroundColor: ['#ef4444', '#22c55e', '#3b82f6'][i%3], animation: `twinkle ${1.5 + Math.random() * 2}s infinite ease-in-out` }} /> ))}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full px-4">
+                      {[{ label: "Security", icon: Shield, prompt: "Security audit: " }, { label: "Optimize", icon: Zap, prompt: "Optimize this: " }, { label: "Architect", icon: Cpu, prompt: "Review architecture: " }, { label: "Analyze", icon: Terminal, prompt: "Deep analyze: " }].map((item, i) => (
+                        <button key={i} onClick={() => handleSend(item.prompt)} className="group p-6 bg-white/[0.03] border border-white/10 rounded-2xl flex flex-col items-start gap-4 hover:bg-blue-600/10 hover:border-blue-500 transition-all text-left">
+                            <item.icon size={22} className="text-blue-500 group-hover:scale-110" /><div><span className="block text-[10px] font-black uppercase tracking-widest text-blue-400 mb-1">{item.label}</span><span className="block text-xs text-gray-500 italic">Neural Audit</span></div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="space-y-12">
+                  {messages.map((msg, i) => (
+                    <div key={i} className="animate-in fade-in slide-in-from-bottom-8">
+                      <ChatBubble role={msg.role} content={msg.role === 'user' ? msg.content : msg.output} />
+                      {msg.role === 'ai' && msg.code && <div className="md:ml-12 mt-8 space-y-8 border-l border-white/5 pl-8"><CodeWindow code={msg.code} /><MetricsBar metrics={msg.metrics} /></div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {isTyping && <div className="flex items-center gap-4 mt-12 ml-6 text-[9px] font-black text-blue-500 uppercase tracking-widest animate-pulse">Decoding...</div>}
+            {showAnalytics && activeTab === 'chat' && <div className="py-32 border-t border-white/5 mt-20"><IssueGraph data={graphData} /></div>}
+            <div ref={scrollRef} className="h-40" />
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-[#010103] via-[#010103] to-transparent z-40">
+            <div className="max-w-4xl mx-auto"><InputArea input={input} setInput={setInput} onSend={() => handleSend()} selectedFile={selectedFile} setSelectedFile={setSelectedFile} /></div>
+        </div>
       </main>
-
-      <div className="pointer-events-none absolute inset-0 z-20 shadow-[inset_0_0_150px_rgba(0,0,0,0.8)]" />
+      <input id="sidebar-file-trigger" type="file" className="hidden" onChange={(e) => setSelectedFile(e.target.files[0])} />
+      <style>{`.grid-cols-24 { grid-template-columns: repeat(24, minmax(0, 1fr)); } @keyframes twinkle { 0%, 100% { opacity: 0.1; } 50% { opacity: 1; } }`}</style>
     </div>
   );
 };
-
 export default App;

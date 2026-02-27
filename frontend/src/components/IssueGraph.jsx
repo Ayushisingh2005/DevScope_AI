@@ -41,6 +41,8 @@ const IssueGraph = ({ data }) => {
                 fontSize={10} 
                 tickLine={false} 
                 axisLine={false}
+                domain={[0, 'auto']}
+                allowDecimals={false}
               />
               <Tooltip 
                 contentStyle={{backgroundColor: '#050505', border: '1px solid #1e293b', borderRadius: '12px'}}
@@ -50,11 +52,11 @@ const IssueGraph = ({ data }) => {
                 dataKey="issues" 
                 stroke="#3b82f6" 
                 strokeWidth={3}
-                fillOpacity={1} 
-                fill="url(#colorIssues)" 
+                fillOpacity={0.2} 
+                fill="#3b82f6" 
                 dot={{ fill: '#3b82f6', r: 5, strokeWidth: 2, stroke: '#000' }}
                 activeDot={{ r: 8 }}
-                isAnimationActive={true}
+                isAnimationActive={false}
               />
             </AreaChart>
           </ResponsiveContainer>

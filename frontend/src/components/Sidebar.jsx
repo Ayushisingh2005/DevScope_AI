@@ -12,7 +12,8 @@ const Sidebar = ({ onAction, activeTab }) => {
   ];
 
   return (
-    <aside className="w-20 border-r border-white/10 bg-black/40 backdrop-blur-xl flex flex-col items-center py-8 gap-10 z-50">
+    // CHANGED: fixed top-0 left-0 h-full
+    <aside className="fixed top-0 left-0 h-full w-20 border-r border-white/10 bg-black/40 backdrop-blur-xl flex flex-col items-center py-8 gap-10 z-50">
       {menuItems.map((item) => (
         <button
           key={item.id}

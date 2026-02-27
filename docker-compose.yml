@@ -4,22 +4,22 @@ services:
   backend:
     build: ./backend
     container_name: devscope_backend
+    restart: always
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
+      - devscope_data:/app/data  # This saves your DB permanently
     env_file:
       - ./backend/.env
 
   frontend:
     build: ./frontend
     container_name: devscope_frontend
+    restart: always
     ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules  # <--- CRITICAL: This fixes the "vite: not found" error
-    env_file:
-      - ./frontend/.env
+      - "80:80"  # Production uses standard Port 80
     depends_on:
       - backend
+
+volumes:
+  devscope_data: # Define the permanent storage volume
