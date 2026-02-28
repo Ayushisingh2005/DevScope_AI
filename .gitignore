@@ -2,17 +2,24 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.venv/
+venv/
+ENV/
+
+# Database (Keep your local history private)
 backend/.env
 backend/devscope.db
+backend/devscope.db-journal
+backend/devscope.db-shm
+backend/devscope.db-wal
 
 # Node junk
 node_modules/
 frontend/dist/
 frontend/.env
-
-# Docker junk
-.dockerignore
+frontend/.env.local
 
 # OS junk
 .DS_Store
 Thumbs.db
+.vscode/

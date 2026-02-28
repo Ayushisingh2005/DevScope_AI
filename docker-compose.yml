@@ -4,22 +4,20 @@ services:
   backend:
     build: ./backend
     container_name: devscope_backend
-    restart: always
     ports:
       - "8000:8000"
     volumes:
-      - devscope_data:/app/data  # This saves your DB permanently
+      - ./backend:/app
+      - /app/data
     env_file:
       - ./backend/.env
+    restart: always
 
   frontend:
     build: ./frontend
     container_name: devscope_frontend
-    restart: always
     ports:
-      - "80:80"  # Production uses standard Port 80
+      - "5173:80"  # Browser mein localhost:5173 khulega
     depends_on:
       - backend
-
-volumes:
-  devscope_data: # Define the permanent storage volume
+    restart: always
