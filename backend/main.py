@@ -18,6 +18,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+async def health_check():
+    return {"status": "DevScope AI Backend is Online", "message": "Health Check Successful"}
+
+
 def get_db():
     session = db.SessionLocal()
     try: yield session
