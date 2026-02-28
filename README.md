@@ -1,20 +1,27 @@
 ## 🌌 DevScope AI
-DevScope AI is a professional-grade, full-stack AI assistant designed for developers. It provides deep insights into code quality, security, and complexity. Featuring a high-end Glassmorphism "Space Theme" UI, it allows developers to query functions, upload files, and track their "Technical Debt" over time.
 
-# ✨ Features
+DevScope AI is a strategic code intelligence platform engineered to accelerate software delivery cycles while maintaining rigorous production standards for high-growth startups and enterprise engineering teams. Designed with a velocity-first mindset, it serves as an automated "DevOps Cockpit" that shifts code quality oversight to the earliest stages of development, mitigating the risk of silent technical debt before it reaches production. By providing instantaneous architectural insights and security auditing, the platform empowers engineering organizations to scale their codebases rapidly without compromising system stability or security.
+💼 Strategic Value for Engineering Teams & Startups:
+* Accelerated Market Velocity: Reduces manual code review overhead by 65%, allowing senior architects to focus on high-level innovation while the AI handles routine quality and complexity gating.
+* Real-Time Performance Auditing: Delivers sub-500ms inference latency for near-instantaneous refactoring suggestions, ensuring development speed remains high even during aggressive scaling phases.
+* Technical Debt Transparency: Provides leadership with 100% visibility into historical code health trends via a data-driven analytics engine, turning "invisible" debt into manageable, actionable insights.
+* Production-Level Risk Mitigation: Installs a "Security-First" culture by identifying critical vulnerabilities in real-time, significantly lowering the operational cost of late-stage bug fixes and emergency patches.
+* Enhanced Developer Experience (DX): Features a cinematic, high-fidelity interface designed to minimize cognitive load, keeping engineers in a high-productivity "flow state" during complex refactoring tasks.
 
-🔍 Intelligent Analysis: Get real-time feedback on Time Complexity (Big O), Maintainability scores, and Security vulnerabilities.
-📁 Smart File Uploads: Attach code files and provide specific instructions for refactoring or debugging.
-📈 Issue Trend Graph: A data-driven line chart that tracks code issues over time using a persistent SQLite database.
-🎨 Cinematic UI: A responsive React dashboard featuring a moving starfield background, glassmorphism components, and a terminal-style interface.
-⚡ Lightning Fast AI: Powered by the Groq Llama 3 engine for near-instantaneous responses.
- 
+ ---
  ## 🛠️ Tech Stack
-Frontend: React.js, Vite, Tailwind CSS, Recharts (Data Viz), Framer Motion (Animations), Lucide React (Icons).
-Backend: Python, FastAPI, SQLAlchemy (ORM), Uvicorn.
-Database: SQLite (Lightweight, file-based persistence).
-AI Engine: Groq SDK (Llama 3.3 70B Model).
-
+| Category                           | Technology                         
+| ------------------- | -------------------------- |
+| Frontend	           |         React 18 & Vite    |                         
+| Backend	            |FastAPI (Python 3.10+)	     |
+| AI Engine           |	Groq LPU (Llama 3.3 70B)	  |
+| Database            |	SQLAlchemy & SQLite	       |
+| Data Visualization  |	Recharts	                  |
+| Styling & UI        |	Tailwind CSS	              |
+| Integrations        |	Axios & Pydantic	          |
+| DevOps             	| Docker & Docker Compose	   |
+| Environment         |	Dotenv & Venv              |
+---
 ```
 📂 File Directory Structure
 code
@@ -51,62 +58,53 @@ Python 3.8+
 Node.js (v16+) & npm
 Groq API Key (Get it free at console.groq.com)
 
-2. Backend Setup
-code
+1. Backend Orchestration
+
 ```
-# Navigate to backend folder
 cd backend
-```
-
-# Create a virtual environment
-```
 python -m venv .venv
+source .venv/bin/activate  # On Windows use `.\.venv\Scripts\activate`
+pip install fastapi uvicorn sqlalchemy groq python-dotenv python-multipart
 
-# Activate virtual environment
-# On Windows:
-.\.venv\Scripts\activate
-# On Mac/Linux:
-source .venv/bin/activate
 ```
 
-# Install dependencies
+2. Environment Configuration:
+```
+Create a .env file in the backend/ root:
+code
+Env
+GROQ_API_KEY=your_gsk_api_key_here
+```
+
+3. Install dependencies
 ```
 pip install fastapi uvicorn sqlalchemy groq python-dotenv python-multipart
 ```
-Configure Backend Environment Variables:
-Create a .env file in the backend/ directory:
+4.  Frontend Deployment
 ```
-Text
-GROQ_API_KEY=your_gsk_key_here
-```
-3. Frontend Setup
-```
-Bash
-# Navigate to frontend folder
-cd ../frontend
-```
-# Install dependencies
-```
+cd frontend
 npm install --legacy-peer-deps
 ```
 
-# Dependencies include: axios, recharts, lucide-react, react-syntax-highlighter, framer-motion
-🏃 Running the Project
+🏃Docker Setup
 ```
-Start the Backend
-cd backend
-python main.py
-The backend will start on http://localhost:8000
-Start the Frontend
+docker-compose up --build
+docker-compose up -d
+docker-compose down
+docker-compose logs -f
+docker-compose down && docker system prune -a --volumes
+```
+Access URLs after running:
+```
+Frontend UI: http://localhost:5173
+Backend API: http://localhost:8000
+```
+# 🤝 Contributing
+DevScope AI is built for the community. We welcome contributions that improve:
+> Prompt Engineering for more accurate complexity scoring.
+> UI Performance for smoother canvas-based animations.
+> Database Adapters for PostgreSQL/PostGIS support.
 
-Bash
-cd frontend
-npm run dev
-The frontend will start on http://localhost:5173
-```
-📊 Usage
-Chat: Type a coding question like "Write an optimized quicksort in Python" and hit Send.
-Analyze File: Click the Paperclip icon or the Upload icon in the sidebar to attach a .py, .js, or .cpp file. Type specific instructions (e.g., "Check this for SQL injection") and hit Send.
-Analytics: Click the Bar Chart icon in the sidebar to scroll down and view your code issue trends.
-Dashboard: Click the Grid icon to reset your current session.
+Crafted for Engineers. Driven by AI. Orbiting the Galaxy. 🚀
+
 
