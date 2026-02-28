@@ -7,7 +7,8 @@ import database as db
 import analyzer 
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(CORSMiddleware, allow_origins=[" http://localhost:5173", 
+    "https://devscope-ai.vercel.app/"], allow_methods=["*"], allow_headers=["*"])
 
 def get_db():
     session = db.SessionLocal()
