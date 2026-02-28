@@ -55,11 +55,13 @@ devscope-ai/
 
 🚀 Installation & Setup
 * Prerequisites:
----
+  
 -Python 3.8+
+
 -Node.js (v16+) & npm
+
 -Groq API Key (Get it free at console.groq.com)
----
+
 1. Backend Orchestration
 
 ```
