@@ -10,9 +10,7 @@ import InputArea from './components/InputArea';
 import IssueGraph from './components/IssueGraph';
 
 // DYNAMIC API URL: This looks for the Railway URL, otherwise defaults to local
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
-// Ensure your axios calls use backticks (``) and the ${} syntax:
-const res = await axios.post(`${API_URL}/analyze`, formData);
+const API_URL = import.meta.env.VITE_API_URL || "https://devscope-ai-2.onrender.com";
 const App = () => {
   const [messages, setMessages] = useState([{ role: 'ai', output: "Neural Node Active. DevScope AI standing by." }]);
   const [input, setInput] = useState("");
