@@ -1,5 +1,6 @@
 import os
 import json
+import re  # Robust number parsing ke liye
 from fastapi import FastAPI, Form, File, UploadFile, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -17,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 2. DATABASE DEPENDENCY
 def get_db():
     session = db.SessionLocal()
     try:
@@ -25,12 +25,12 @@ def get_db():
     finally:
         session.close()
 
-# 3. HEALTH CHECK
+# 2. HEALTH CHECK
 @app.get("/")
 def home():
-    return {"status": "DevScope AI Backend is Online", "kernel": "Llama-3.3-70B"}
+    return {"status": "DevScope AI Online", "kernel": "Llama-3.3-70B"}
 
-# 4. MAIN ANALYSIS ENDPOINT
+# 3. MAIN ANALYSIS ENDPOINT
 @app.post("/analyze")
 async def analyze_code(
     query: str = Form(None), 
@@ -61,17 +61,26 @@ async def analyze_code(
         history=history_context
     )
 
-    # 5. PERSISTENCE: Save Conversation
+    # 4. PERSISTENCE: Save Chat
     session.add(db.ChatMessage(role="user", content=query or "Uploaded file for analysis"))
     session.add(db.ChatMessage(role="ai", content=ai_res.get("output", "")))
     
-    # SMART METRICS: Save to Graph only if real code analysis occurred
+    # 5. SMART METRICS: Parsing and Safety Overrides
     is_code_analysis = ai_res.get("code") is not None or (ai_res.get("complexity") and ai_res.get("complexity") != "N/A")
     
     if is_code_analysis:
         try:
             raw_issues = ai_res.get("issue_count", 0)
-            clean_issues = int(raw_issues) if str(raw_issues).isdigit() else 0
+            
+            # Robust Extraction: find the first number in the string (handles "11 issues" or "11")
+            num_match = re.search(r'\d+', str(raw_issues))
+            clean_issues = int(num_match.group()) if num_match else 0
+            
+            # SAFETY OVERRIDE: If AI labels it dangerous but sends 0, force the graph up
+            security_label = str(ai_res.get("security", "")).lower()
+            if clean_issues == 0 and any(word in security_label for word in ["critical", "risky", "insecure"]):
+                clean_issues = 7
+
             session.add(db.CodeMetric(
                 issue_count=clean_issues,
                 complexity=str(ai_res.get("complexity", "N/A")),
@@ -92,6 +101,7 @@ async def get_chat_history(session: Session = Depends(get_db)):
 # 7. GRAPH DATA (For Recharts)
 @app.get("/history")
 async def get_history(session: Session = Depends(get_db)):
+    # Limit to 15 points for a cleaner visual look
     records = session.query(db.CodeMetric).order_by(db.CodeMetric.timestamp.desc()).limit(15).all()
     return [{"date": r.timestamp.strftime("%H:%M"), "issues": r.issue_count} for r in reversed(records)]
 

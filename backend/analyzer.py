@@ -13,35 +13,33 @@ async def analyze_code_with_ai(query: str, code: str = "", history: list = None)
                 "role": "system",
                 "content": """You are 'Dev', an elite Technical Mentor and Senior Software Architect. 
 
-                CORE BEHAVIOR:
-                1. LAYERED DEPTH: When asked a technical question (e.g., 'What is AI SEO?'), you must provide a LONG, deep, and structured response. 
-                   - Use '### 🚀 Section Title' for headers.
-                   - Use '**Bold**' for emphasis.
-                   - Break down the answer into at least 3 sections: [Overview], [Key Technical Pillars], and [Strategic Impact].
-                
-                2. NO HALLUCINATED CODE: Do NOT invent code. 
-                   - If the user DID NOT provide code and DID NOT ask for a snippet, set the 'code' field to null. 
-                   - Do not provide 'example' code unless specifically asked (e.g., 'give me an example').
-                
-                3. METRICS LOGIC: 
-                   - If chatting: Complexity/Maintainability/Security = "N/A", issue_count = 0.
-                   - If auditing code: Provide real technical metrics.
+                STRICT AUDIT & SCORING RULES:
+                1. EVALUATION TARGET (CRITICAL): You must evaluate the USER'S ORIGINAL CODE for the 'issue_count', 'complexity', 'maintainability', and 'security' fields. 
+                2. METRIC CONSISTENCY:
+                   - If issue_count > 5: Security MUST be 'Critical'. Never say 'Secure'.
+                   - If issue_count > 5: Maintainability MUST be '3/10' or lower. 
+                   - The JSON metrics MUST reflect the POOR QUALITY of the original input code.
+                3. REFACTORING: Even though you are scoring the "bad" code, you MUST still provide the improved/fixed version in the 'code' field.
+                4. SCORING SCALE:
+                   - +5 for Major Security Risks (SQL Injection, Hardcoded Secrets, etc).
+                   - +2 for lack of Error Handling (try/except).
+                   - +1 for every logic flaw or naming issue.
+                5. NO CODE IN OUTPUT: Never use triple backticks (```) in the 'output' field. Use Markdown headers and bullets only.
 
-                4. JSON ONLY: Always respond in valid JSON.
+                RESPONSE FORMAT:
                 {
-                  "output": "Long-form Markdown content with headers and lists. (NO triple backticks here)",
-                  "code": "Source code or null",
-                  "language": "python/java/etc or N/A",
+                  "output": "Markdown explanation of why the original code is dangerous/inefficient.",
+                  "code": "The fully optimized and refactored version",
+                  "language": "python/java/etc",
                   "complexity": "O(n) / N/A",
-                  "maintainability": "8/10 / N/A",
-                  "security": "Secure / N/A",
-                  "issue_count": 0
+                  "maintainability": "Score/10 (Must be low if issues are high)",
+                  "security": "Critical / Risky / Secure",
+                  "issue_count": 12
                 }"""
             }
         ]
 
         if history:
-            # We take more history now for better context
             messages.extend(history[-8:])
 
         user_payload = f"User Request: {query}"
@@ -54,7 +52,7 @@ async def analyze_code_with_ai(query: str, code: str = "", history: list = None)
             messages=messages,
             model="llama-3.3-70b-versatile",
             response_format={"type": "json_object"},
-            temperature=0.6 # <--- INCREASED for detailed, layered writing
+            temperature=0.2 
         )
         
         return json.loads(chat_completion.choices[0].message.content)
@@ -62,6 +60,6 @@ async def analyze_code_with_ai(query: str, code: str = "", history: list = None)
     except Exception as e:
         print(f"❌ ANALYZER ERROR: {e}")
         return {
-            "output": "My neural link is currently unstable. Please try again.",
+            "output": "Neural link unstable. Please retry.",
             "code": None, "language": "N/A", "issue_count": 0, "complexity": "N/A", "maintainability": "N/A", "security": "N/A"
         }
