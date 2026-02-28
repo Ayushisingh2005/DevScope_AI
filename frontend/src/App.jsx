@@ -24,14 +24,14 @@ const App = () => {
 
   const fetchGraphData = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/history`);
+      const res = await axios.get(`${API_URL}/history`);
       setGraphData(res.data || []);
     } catch (err) { console.error("Metrics Fetch Error", err); }
   };
 
   const fetchChatHistory = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/chat-history`);
+      const res = await axios.get(`${API_URL}/chat-history`);
       const sessions = res.data?.filter(m => m.role === 'user') || [];
       setHistoryItems(sessions);
       setActiveTab('history');
@@ -67,7 +67,7 @@ const App = () => {
     if (selectedFile) formData.append('file', selectedFile);
 
     try {
-      const res = await axios.post(`${API_BASE}/analyze`, formData);
+      const res = await axios.post(`${API_URL}/analyze`, formData);
       const aiResponse = { 
         role: 'ai', 
         output: res.data?.output || "Report finalized.", 
