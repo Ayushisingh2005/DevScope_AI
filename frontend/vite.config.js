@@ -2,7 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react()], build: {
+    target: 'esnext' // This tells Vite to support modern JS features
+  },
   server: {
     host: true,       // Exposes the server to your local network (required for Docker)
     port: 5173,       // Standard Vite port
