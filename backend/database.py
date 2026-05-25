@@ -4,20 +4,14 @@ from sqlalchemy.orm import sessionmaker
 import datetime
 import os
 
-# Absolute path for Docker Volume persistence
-# This folder matches the 'volumes' path in your docker-compose.yml
-DB_PATH = "/app/data/devscope.db"
-
-# Safety: Create directory if it doesn't exist
-os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+# Use a relative path that works on Render
+DB_PATH = os.path.join(os.path.dirname(__file__), "devscope.db")
 
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
-
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, 
     connect_args={"check_same_thread": False}
 )
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -33,9 +27,8 @@ class CodeMetric(Base):
 class ChatMessage(Base):
     __tablename__ = "chat_history"
     id = Column(Integer, primary_key=True, index=True)
-    role = Column(String)  # 'user' or 'ai'
-    content = Column(Text) # Stores user query or AI output
+    role = Column(String)
+    content = Column(Text)
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
 
-# Create tables if they don't exist
 Base.metadata.create_all(bind=engine)
