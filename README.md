@@ -1,19 +1,20 @@
 <div align="center">
 
+  <br/>
 
-  [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=6366F1&center=true&vCenter=true&width=650&lines=🔭+DevScope+AI;Your+AI-Powered+DevOps+Cockpit;Code+Intelligence+at+Sub-500ms;Ship+Fast.+Break+Nothing.)](https://git.io/typing-svg)
+  [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=34&pause=1000&color=38BDF8&center=true&vCenter=true&width=700&lines=🌌+DevScope+AI;AI+Assistant+for+Developers;Real-time+Code+Intelligence;Ship+Clean.+Ship+Secure.)](https://git.io/typing-svg)
 
   <br/>
 
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=2000&color=888888&center=true&vCenter=true&width=680&lines=Strategic+code+intelligence+that+shifts+quality+oversight+to+the+earliest+stage+of+development." alt="Subtitle"/>
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=15&pause=2000&color=888888&center=true&vCenter=true&width=700&lines=A+professional-grade+AI+for+code+quality%2C+security%2C+and+complexity+insights." alt="Subtitle"/>
 
   <br/><br/>
 
-  [![React](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org)
+  [![React](https://img.shields.io/badge/React.js-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org)
+  [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
   [![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-  [![Llama](https://img.shields.io/badge/Llama_3.3-70B-6366f1?style=for-the-badge&logo=meta&logoColor=white)](https://groq.com)
+  [![Groq](https://img.shields.io/badge/Groq-Llama_3.3_70B-38bdf8?style=for-the-badge&logo=meta&logoColor=white)](https://groq.com)
   [![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
-  [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
   [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 
   <br/>
@@ -22,32 +23,29 @@
 
 ---
 
-## 🚩 The Problem: Silent Technical Debt
+## 🚩 The Problem: Code Quality Flies Blind
 
-Traditional code review is slow, manual, and happens too late. By the time a senior engineer reviews a PR, the damage is done — complexity has crept in, security gaps are baked deep, and refactoring costs 10× more than it should have.
+Most developers write code, push it, and *hope* for the best. Security vulnerabilities, creeping complexity, and silent technical debt only surface during expensive late-stage reviews — or worse, in production.
 
-Engineering teams waste cycles on:
+DevScope AI installs a **real-time intelligence layer** directly into your development workflow:
 
-1. Manual complexity audits that slow down delivery velocity
-2. Security vulnerabilities found at production, not at commit
-3. Leadership flying blind on codebase health trends
-4. Senior architects stuck reviewing routine quality gates instead of innovating
+1. Ask it anything about your code — Big O, maintainability, security gaps
+2. Upload any file and get targeted refactoring or debugging analysis
+3. Track your technical debt as a *measurable trend* over time — not a gut feeling
 
-**DevScope AI shifts all of that to the moment you write the code.**
+**No more flying blind. Your AI co-pilot is always watching.**
 
 ---
 
-## ✨ What DevScope AI Does
-
-DevScope is an automated **Code Intelligence Platform** — a DevOps Cockpit that audits your code in real-time before it ever reaches production.
+## ✨ Features
 
 | Feature | Description |
 |---|---|
-| ⚡ **Sub-500ms Inference** | Near-instantaneous refactoring suggestions powered by Groq LPU |
-| 🔐 **Security Auditing** | Identifies critical vulnerabilities at write-time, not deploy-time |
-| 📊 **Complexity Scoring** | Quantifies architectural complexity and flags debt hotspots |
-| 📈 **Health Trend Analytics** | 100% visibility into historical codebase health via data-driven dashboards |
-| 🧠 **AI Refactor Engine** | Llama 3.3 70B generates actionable refactoring suggestions in context |
+| 🔍 **Intelligent Analysis** | Real-time feedback on Time Complexity (Big O), Maintainability scores, and Security vulnerabilities |
+| 📁 **Smart File Uploads** | Attach `.py`, `.js`, or `.cpp` files with specific refactoring or debugging instructions |
+| 📈 **Issue Trend Graph** | Data-driven line chart tracking code issues over time via persistent SQLite |
+| 🎨 **Cinematic UI** | Glassmorphism Space Theme with a live starfield, terminal-style interface, and smooth animations |
+| ⚡ **Lightning-Fast AI** | Groq LPU inference with Llama 3.3 70B for near-instantaneous responses |
 
 ---
 
@@ -55,57 +53,29 @@ DevScope is an automated **Code Intelligence Platform** — a DevOps Cockpit tha
 
 ```mermaid
 graph TD
-    subgraph Input["📥 Developer Input"]
-        A[👨‍💻 Code Submission] -->|HTTP POST| B[⚡ FastAPI Backend]
+    subgraph Frontend["🖥️ React Frontend"]
+        A[👨‍💻 Developer] -->|Code / File Upload| B[💬 Chat Interface]
+        B -->|HTTP POST via Axios| C[⚡ FastAPI Backend]
     end
 
-    subgraph Intelligence["🧠 AI Engine"]
-        B -->|Prompt + Code| C[🤖 Groq — Llama 3.3 70B]
-        C -->|Analysis JSON| D[📐 Complexity Scorer]
-        D -->|Scored Result| E[🔐 Security Auditor]
-    end
-
-    subgraph Persistence["🗄️ Data Layer"]
+    subgraph Backend["🧠 Backend Engine"]
+        C -->|Prompt Engineering| D[🤖 Groq — Llama 3.3 70B]
+        D -->|Analysis Result| E[📊 Issue Scorer]
         E -->|Write Record| F[(SQLite via SQLAlchemy)]
-        F -->|Historical Data| G[📊 Analytics Engine]
     end
 
-    subgraph Frontend["🖥️ React Dashboard"]
-        G -->|Trend Data| H[📈 Recharts Visualizer]
-        C -->|Live Insight| I[💬 AI Chat Interface]
+    subgraph Dashboard["📈 Analytics Layer"]
+        F -->|Historical Data| G[Recharts Issue Trend Graph]
+        D -->|Live Response| H[Terminal Chat Bubbles]
     end
 
-    style C fill:#6366f1,stroke:#fff,stroke-width:1px,color:#fff
-    style H fill:#6366f1,stroke:#fff,stroke-width:1px,color:#fff
-    style I fill:#6366f1,stroke:#fff,stroke-width:1px,color:#fff
-    style B fill:#009688,stroke:#fff,stroke-width:1px,color:#fff
+    style D fill:#38bdf8,stroke:#fff,stroke-width:1px,color:#000
+    style G fill:#38bdf8,stroke:#fff,stroke-width:1px,color:#000
+    style C fill:#009688,stroke:#fff,stroke-width:1px,color:#fff
     style F fill:#003B57,stroke:#aaa,stroke-width:1px,color:#fff
     style A fill:#1e1b4b,stroke:#a5b4fc,stroke-width:1px,color:#fff
+    style B fill:#1e293b,stroke:#38bdf8,stroke-width:1px,color:#fff
 ```
-
----
-
-## 💼 Strategic Value
-
-| Metric | Impact |
-|---|---|
-| 🚀 Manual review overhead reduced | **65%** |
-| ⚡ AI inference latency | **< 500ms** |
-| 👁️ Codebase health visibility | **100%** |
-| 💸 Late-stage bug fix cost reduction | **Significant** |
-
----
-
-## ⚙️ Engineering Highlights
-
-### 1. AI Analysis Engine (`analyzer.py`)
-The core intelligence layer sends code to Groq's Llama 3.3 70B with a structured prompt that returns complexity scores, security flags, and refactoring suggestions — all in a single sub-500ms inference pass.
-
-### 2. Persistent Health Tracking (`database.py`)
-Every analysis is stored via SQLAlchemy to SQLite, building a longitudinal record of codebase health. The analytics engine queries this history to surface trends — turning invisible debt into a visible, manageable metric.
-
-### 3. Cinematic Developer Interface
-The frontend is designed around minimizing cognitive load — a high-fidelity starfield canvas, modular component architecture, and a real-time chat interface keep engineers in a productive flow state during complex refactoring work.
 
 ---
 
@@ -113,12 +83,12 @@ The frontend is designed around minimizing cognitive load — a high-fidelity st
 
 | Layer | Technologies |
 |---|---|
-| **Frontend** | React 18, Vite, Tailwind CSS, Recharts |
-| **Backend** | Python 3.10+, FastAPI, Uvicorn |
-| **AI / ML** | Llama 3.3 (70B), Groq LPU Inference |
-| **Database** | SQLAlchemy, SQLite |
-| **DevOps** | Docker, Docker Compose |
-| **Integrations** | Axios, Pydantic, python-dotenv |
+| **Frontend** | React.js, Vite, Tailwind CSS, Framer Motion, Recharts, Lucide React |
+| **Backend** | Python 3.8+, FastAPI, Uvicorn |
+| **AI Engine** | Groq SDK — Llama 3.3 70B |
+| **Database** | SQLite, SQLAlchemy ORM |
+| **File Handling** | python-multipart |
+| **HTTP Client** | Axios |
 
 ---
 
@@ -131,7 +101,7 @@ devscope-ai/
 │   ├── analyzer.py         # AI logic & Groq API integration
 │   ├── database.py         # SQLite connection & SQLAlchemy models
 │   ├── .env                # API keys (environment variables)
-│   └── devscope.db         # Generated SQLite database file
+│   └── devscope.db         # Auto-generated SQLite database
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -160,64 +130,84 @@ devscope-ai/
 - Node.js v16+ & npm
 - A [Groq API key](https://console.groq.com) (free)
 
-### Backend
+---
+
+### 1. Backend Setup
 
 ```bash
+# Navigate to the backend folder
 cd backend
 
-# Create and activate virtual environment
+# Create and activate a virtual environment
 python -m venv .venv
-source .venv/bin/activate        # Windows: .\.venv\Scripts\activate
+
+# Windows
+.\.venv\Scripts\activate
+# Mac / Linux
+source .venv/bin/activate
 
 # Install dependencies
 pip install fastapi uvicorn sqlalchemy groq python-dotenv python-multipart
-
-# Configure environment
-echo "GROQ_API_KEY=your_gsk_api_key_here" > .env
-
-# Start the server
-uvicorn main:app --reload
 ```
 
-### Frontend
+**Configure environment variables** — create a `.env` file in `backend/`:
+
+```env
+GROQ_API_KEY=your_gsk_key_here
+```
+
+**Start the backend:**
 
 ```bash
-cd frontend
+python main.py
+# Running at http://localhost:8000
+```
+
+---
+
+### 2. Frontend Setup
+
+```bash
+# Navigate to the frontend folder
+cd ../frontend
+
+# Install dependencies
+# (includes axios, recharts, lucide-react, react-syntax-highlighter, framer-motion)
 npm install --legacy-peer-deps
+
+# Start the dev server
 npm run dev
-```
-
-### Docker (Recommended)
-
-```bash
-# Build and start all services
-docker-compose up --build
-
-# Run in detached mode
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop and clean up
-docker-compose down
+# Running at http://localhost:5173
 ```
 
 | Service | URL |
 |---|---|
 | Frontend UI | `http://localhost:5173` |
 | Backend API | `http://localhost:8000` |
-| API Docs | `http://localhost:8000/docs` |
+| API Docs (Swagger) | `http://localhost:8000/docs` |
+
+---
+
+## 📊 Usage Guide
+
+**💬 Chat** — Type any coding question (e.g. *"Write an optimized quicksort in Python"*) and hit Send. The AI responds with code, complexity analysis, and suggestions.
+
+**📁 Analyze a File** — Click the **Paperclip** icon or the **Upload** icon in the sidebar to attach a `.py`, `.js`, or `.cpp` file. Add specific instructions (e.g. *"Check this for SQL injection"*) and hit Send.
+
+**📈 Analytics** — Click the **Bar Chart** icon in the sidebar to view your issue trend graph — a persistent record of code health over time.
+
+**🔄 Dashboard** — Click the **Grid** icon to reset your current session and start a fresh analysis.
 
 ---
 
 ## 🤝 Contributing
 
-DevScope AI is built for the community. Contributions that improve the following are especially welcome:
+Contributions that improve the following are especially welcome:
 
-- **Prompt Engineering** — more accurate complexity and security scoring
-- **UI Performance** — smoother canvas-based animations
-- **Database Adapters** — PostgreSQL / PostGIS support
+- **Prompt Engineering** — more accurate Big O and security scoring prompts
+- **New File Type Support** — extending uploads to `.ts`, `.go`, `.rs`, `.java`
+- **Database Adapters** — PostgreSQL support via SQLAlchemy
+- **UI Themes** — additional Glassmorphism or terminal-dark variants
 
 Please open an issue before submitting a large PR so we can align on direction.
 
@@ -230,6 +220,6 @@ This project is open source. See [LICENSE](LICENSE) for details.
 ---
 
 <div align="center">
-  <p>Crafted for Engineers. Driven by AI. Orbiting the Galaxy. 🚀</p>
-  <p><i>DevScope AI — shift quality left, ship with confidence.</i></p>
+  <p>Built for developers who care about code quality. ⚡</p>
+  <p><i>DevScope AI — Real-time intelligence. Zero compromise.</i></p>
 </div>
