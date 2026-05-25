@@ -1,7 +1,8 @@
 fastapi
 uvicorn
-openai
 python-multipart
 sqlalchemy
 python-dotenv
-groq 
+groq
+beautifulsoup4
+httpx
