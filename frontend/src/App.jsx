@@ -9,8 +9,9 @@ import MetricsBar from './components/MetricsBar';
 import InputArea from './components/InputArea';
 import IssueGraph from './components/IssueGraph';
 
-// DYNAMIC API URL: This looks for the Railway URL, otherwise defaults to local
-const API_URL = import.meta.env.VITE_API_URL || "https://devscope-ai-2.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const API_BASE = API_URL;
+
 const App = () => {
   const [messages, setMessages] = useState([{ role: 'ai', output: "Neural Node Active. DevScope AI standing by." }]);
   const [input, setInput] = useState("");
@@ -24,14 +25,14 @@ const App = () => {
 
   const fetchGraphData = async () => {
     try {
-      const res = await axios.get(`${API_URL}/history`);
+      const res = await axios.get(`${API_BASE}/history`);
       setGraphData(res.data || []);
     } catch (err) { console.error("Metrics Fetch Error", err); }
   };
 
   const fetchChatHistory = async () => {
     try {
-      const res = await axios.get(`${API_URL}/chat-history`);
+      const res = await axios.get(`${API_BASE}/chat-history`);
       const sessions = res.data?.filter(m => m.role === 'user') || [];
       setHistoryItems(sessions);
       setActiveTab('history');
@@ -51,7 +52,6 @@ const App = () => {
     const finalInput = forcedQuery || input;
     if (!finalInput.trim() && !selectedFile) return;
 
-    // Scrub context logic (Kept exactly as requested)
     const ctx = messages.map(m => ({
         role: m.role === 'ai' ? 'assistant' : 'user',
         content: m.role === 'ai' ? m.output.substring(0, 200) : m.content.substring(0, 200)
@@ -67,7 +67,7 @@ const App = () => {
     if (selectedFile) formData.append('file', selectedFile);
 
     try {
-      const res = await axios.post(`${API_URL}/analyze`, formData);
+      const res = await axios.post(`${API_BASE}/analyze`, formData);
       const aiResponse = { 
         role: 'ai', 
         output: res.data?.output || "Report finalized.", 
